@@ -108,3 +108,16 @@ func (a *App) SelectMenuItem(item string) error {
 	return nil
 }
 
+func (a App) Activate(raiseAllWindows bool, ignoreOtherApps bool) error {
+	orderWindowFront := true
+	_, err := a.c.Call(&api.ClientOriginatedMessage{
+		Submessage: &api.ClientOriginatedMessage_ActivateRequest{ActivateRequest: &api.ActivateRequest{
+			OrderWindowFront: &orderWindowFront,
+			ActivateApp: &api.ActivateRequest_App{
+				RaiseAllWindows:   &raiseAllWindows,
+				IgnoringOtherApps: &ignoreOtherApps,
+			},
+		}},
+	})
+	return err
+}

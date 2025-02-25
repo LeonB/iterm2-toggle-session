@@ -38,6 +38,8 @@ func (s *Session) SendText(t string) error {
 }
 
 func (s *Session) Activate(selectTab, orderWindowFront bool) error {
+	selectionSession := true
+
 	resp, err := s.c.Call(&api.ClientOriginatedMessage{
 		Submessage: &api.ClientOriginatedMessage_ActivateRequest{
 			ActivateRequest: &api.ActivateRequest{
@@ -46,6 +48,7 @@ func (s *Session) Activate(selectTab, orderWindowFront bool) error {
 				},
 				SelectTab:        &selectTab,
 				OrderWindowFront: &orderWindowFront,
+				SelectSession:    &selectionSession,
 			},
 		},
 	})

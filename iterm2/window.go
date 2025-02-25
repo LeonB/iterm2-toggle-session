@@ -76,3 +76,24 @@ func (w *Window) SetTitle(s string) error {
 	})
 	return err
 }
+
+func (w *Window) Activate() error {
+	orderWindowFront := true
+	resp, err := w.c.Call(&api.ClientOriginatedMessage{
+		Submessage: &api.ClientOriginatedMessage_ActivateRequest{
+			ActivateRequest: &api.ActivateRequest{
+				Identifier: &api.ActivateRequest_WindowId{
+					WindowId: w.id,
+				},
+				OrderWindowFront: &orderWindowFront,
+			},
+		},
+	})
+	if err != nil {
+		return fmt.Errorf("error activating window %q: %w", w.id, err)
+	}
+	if status := resp.GetActivateResponse().GetStatus(); status != api.ActivateResponse_OK {
+		return fmt.Errorf("unexpected status for activate request: %s", status)
+	}
+	return nil
+}
