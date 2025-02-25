@@ -14,6 +14,10 @@ type Window struct {
 	session string
 }
 
+func (w *Window) GetWindowID() string {
+    return w.id
+}
+
 func (w *Window) CreateTab() (*Tab, error) {
 	resp, err := w.c.Call(&api.ClientOriginatedMessage{
 		Submessage: &api.ClientOriginatedMessage_CreateTabRequest{

@@ -14,7 +14,7 @@ type Tab struct {
 }
 
 func (t *Tab) GetTabID() string {
-    return t.id
+	return t.id
 }
 
 func (t *Tab) SetTitle(s string) error {
@@ -46,6 +46,7 @@ func (t *Tab) ListSessions() ([]*Session, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error listing sessions for tab %q: %w", t.id, err)
 	}
+
 	lsr := resp.GetListSessionsResponse()
 	for _, window := range lsr.GetWindows() {
 		if window.GetWindowId() != t.windowID {
@@ -56,10 +57,22 @@ func (t *Tab) ListSessions() ([]*Session, error) {
 				continue
 			}
 			for _, link := range wt.GetRoot().GetLinks() {
-				list = append(list, &Session{
-					c:  t.c,
-					id: link.GetSession().GetUniqueIdentifier(),
-				})
+				if link.GetSession() != nil {
+					list = append(list, &Session{
+						c:  t.c,
+						id: link.GetSession().GetUniqueIdentifier(),
+					})
+				}
+
+				// this has something to do with splits
+				for _, link := range link.GetNode().GetLinks() {
+					if link.GetSession() != nil {
+						list = append(list, &Session{
+							c:  t.c,
+							id: link.GetSession().GetUniqueIdentifier(),
+						})
+					}
+				}
 			}
 		}
 	}

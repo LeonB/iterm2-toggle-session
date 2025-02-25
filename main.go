@@ -212,7 +212,7 @@ func handleArg(app *iterm2.App, arg string) error {
 
 			for _, s := range ss {
 				// get the process title of this session
-				vars, err := s.VariablesGet([]string{"*"})
+				vars, err := s.VariablesGet([]string{"processTitle"})
 				if err != nil {
 					return err
 				}
